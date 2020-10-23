@@ -10,9 +10,9 @@
 from main import *
 
 
-org_code = 'ptymy'
-member_no = '13648814809'
-phone = '13157688283'
+org_code = 'haoshijie'
+member_no = '1380809'
+phone = '15068250848'
 admin_phone = '17633705244'
 
 

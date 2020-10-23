@@ -22,4 +22,14 @@ result = requests.post(url,headers=headers)
 
 
 headers_two['Cookie'] =";".join([headers_two['Cookie'],";".join('='.join(i) for i in result.cookies.items())])
-print(headers_two)
+
+
+import requests
+import time
+
+time_str = str(time.time())[:13]
+
+url_rel = r'http://nb3.joowing.com/promotion/promotion_item_templates/query_template.json?_search=false&nd=%s&rows=100&page=1&sidx=&sord=asc' % time_str
+
+result_rel = requests.get(url_rel,headers=headers_two)
+print(result_rel.json())

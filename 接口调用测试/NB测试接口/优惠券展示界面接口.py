@@ -11,6 +11,7 @@ password = 'js0909'
 
 api = r'http://nb3.joowing.com/nebula/v3/promotion/coupon_definitions.json?coupon_type=mall&display_in_list=1&org_code=%s&page%%5Bindex%%5D=1&page%%5Bsize%%5D=1000&state=online'%org_code
 headers = get_nb_cookies(org_code,password).get_cookies()
+print(headers)
 data = {}
 request_type='get'
 

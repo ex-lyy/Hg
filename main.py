@@ -4,7 +4,7 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 
-import pymysql
+
 
 
 def print_hi(name):
@@ -13,6 +13,8 @@ def print_hi(name):
     return 0
 
 
+
+import pymysql
 # 连接致维公司备库
 def connect_master_copy_DB(master_dbname):
     from sshtunnel import SSHTunnelForwarder

@@ -10,7 +10,7 @@
 from main import *
 
 
-org_code = 'haoshijie'
+org_code = 'chenbaby'
 member_no = '1380809'
 phone = '15068250848'
 admin_phone = '17633705244'

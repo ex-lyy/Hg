@@ -150,3 +150,11 @@ elif a == 4:
 else:
     print(0)
 '''
+
+a = 1
+b1 = a
+
+# a = a+1
+
+a += 1
+print(b1,a)

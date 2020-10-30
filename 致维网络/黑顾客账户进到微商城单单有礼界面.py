@@ -10,8 +10,8 @@
 from main import *
 
 
-org_code = 'chenbaby'
-member_no = '1380809'
+org_code = 'aqmmbb'
+member_no = '88121020'
 phone = '15068250848'
 admin_phone = '17633705244'
 

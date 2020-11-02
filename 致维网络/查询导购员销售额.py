@@ -6,8 +6,8 @@
 
 from 致维网络.joowMain import *
 
-org_code = 'aiying'
-guide_no = '2308'
+org_code = 'hsmmsj'
+guide_no = '603'
 
 # 查询导购今日销售金额
 sales_performance, order_count = find_guider_daily_sale_amount(org_code, guide_no)

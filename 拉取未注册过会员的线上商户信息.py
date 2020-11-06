@@ -127,11 +127,14 @@ ws_sheet1.cell(row = 1,column = 3,value='商户类型')
 ws_sheet1.cell(row = 1,column = 4,value='异常商户code')
 ws_sheet1.cell(row = 1,column = 5,value='异常商户名称')
 ws_sheet1.cell(row = 1,column = 6,value='异常商户类型')
+
+# 写入正常商户code、名称、商户类型
 for index_org in range(2,len(org_list)+2):
     ws_sheet1.cell(row = index_org,column = 1, value = org_list[index_org-2])
     ws_sheet1.cell(row = index_org,column = 2, value = name_list[index_org-2])
     ws_sheet1.cell(row = index_org,column = 3, value = profile_id_list[index_org-2])
 
+# 写入异常商户code、名称、商户类型
 for real_unnormal_index in range(2,len(real_unnormal_org_list)+2):
     ws_sheet1.cell(row = real_unnormal_index,column = 4, value = real_unnormal_org_list[real_unnormal_index-2])
     # 找到该商户在商户code列表中的索引，去名称列表里面拿到对应的商户名称
@@ -139,7 +142,7 @@ for real_unnormal_index in range(2,len(real_unnormal_org_list)+2):
     ws_sheet1.cell(row = real_unnormal_index,column = 5, value = name_list[org_name_index])
     ws_sheet1.cell(row = real_unnormal_index,column = 6, value = profile_id_list[org_name_index])
 
-
+# 写表格的头
 ws_sheet2.cell(row = 1,column = 1,value='三个月内少于三个会员注册')
 ws_sheet2.cell(row = 1,column = 3,value='三个月内没有上线订单奖励')
 ws_sheet2.cell(row = 1,column = 5,value='三个月内没有上线促销活动')
@@ -150,24 +153,28 @@ ws_sheet2.cell(row = 1,column = 6,value='三个月内没有上线促销活动-�
 ws_sheet2.cell(row = 1,column = 8,value='三个月内没有上线抽奖活动-名称')
 
 
+# 写入会员注册异常的商户数据
 for unnormal_member_org_index in range(2,len(unnormal_member_org_list)+2):
     ws_sheet2.cell(row=unnormal_member_org_index, column=1, value=unnormal_member_org_list[unnormal_member_org_index-2])
     # 找到该商户在商户code列表中的索引，去名称列表里面拿到对应的商户名称
     unnormal_member_org_name_index = org_list.index(unnormal_member_org_list[unnormal_member_org_index-2])
     ws_sheet2.cell(row=unnormal_member_org_index, column=2, value=name_list[unnormal_member_org_name_index])
 
+# 写入订单奖励异常的商户数据
 for unnormal_prize_org_index in range(2,len(unnormal_prize_org_list)+2):
     ws_sheet2.cell(row=unnormal_prize_org_index, column=3, value=unnormal_prize_org_list[unnormal_prize_org_index-2])
     # 找到该商户在商户code列表中的索引，去名称列表里面拿到对应的商户名称
     unnormal_prize_org_name_index = org_list.index(unnormal_prize_org_list[unnormal_prize_org_index-2])
     ws_sheet2.cell(row=unnormal_prize_org_index, column=4, value=name_list[unnormal_prize_org_name_index])
 
+# 写入促销活动异常的商户数据
 for unnormal_promotion_org_index in range(2,len(unnormal_promotion_org_list)+2):
     ws_sheet2.cell(row=unnormal_promotion_org_index, column=5, value=unnormal_promotion_org_list[unnormal_promotion_org_index-2])
     # 找到该商户在商户code列表中的索引，去名称列表里面拿到对应的商户名称
     unnormal_promotion_org_name_index = org_list.index(unnormal_promotion_org_list[unnormal_promotion_org_index-2])
     ws_sheet2.cell(row=unnormal_promotion_org_index, column=6, value=name_list[unnormal_promotion_org_name_index])
 
+# 写入抽奖活动异常的商户数据
 for unnormal_marketing_org_index in range(2,len(unnormal_marketing_org_list)+2):
     ws_sheet2.cell(row=unnormal_marketing_org_index, column=7, value=unnormal_marketing_org_list[unnormal_marketing_org_index-2])
     # 找到该商户在商户code列表中的索引，去名称列表里面拿到对应的商户名称

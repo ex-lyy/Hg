@@ -4,7 +4,7 @@
 # 谨记:遵守秩序，尊重选择。
 # 创建时间：2020/9/29 下午 09:22
 
-from main import *
+from Mymain import *
 import calendar
 import time
 import requests
@@ -58,7 +58,7 @@ def find_guider_monthly_sale_amout(org_code, guider_no):
     return sales_performance, order_count
 
 
-# 对员工表的密码进行简单解密
+# 对员工表的密码进行简单解密(解密比较复杂，暂时不做了，只输出密文)
 def decode_MD5(org_code, guider_no):
     master_dbname = 'ris_production'
     server, dbconfig, cursor = connect_master_copy_DB(master_dbname)

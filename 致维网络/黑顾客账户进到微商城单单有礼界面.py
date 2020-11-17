@@ -5,14 +5,13 @@
 # 创建时间：2020/8/22 17:44
 
 
-# import sys
-# sys.path.append(r'D:\Lyy\main.py')
-from main import *
+
+from Mymain import *
 
 
-org_code = 'lebaby'
-member_no = '200120481'
-phone = '13516830418'
+org_code = 'haoshijie'
+member_no = '1378965'
+phone = '13141520808'
 admin_phone = '17633705244'
 
 
@@ -30,8 +29,7 @@ if __name__ == '__main__':
             sql = "SELECT * FROM ris_production.members WHERE org_code = '%s' AND phone = '%s';" % (org_code, phone)
             break
         elif choose == '3':
-            sql = "SELECT * FROM ris_production.members WHERE org_code = '%s' AND phone = '%s';" % (
-            org_code, admin_phone)
+            sql = "SELECT * FROM ris_production.members WHERE org_code = '%s' AND phone = '%s';" % (org_code, admin_phone)
             break
         else:
             print("您的输入有误，请重新输入!")
@@ -52,6 +50,6 @@ if __name__ == '__main__':
         print("微商城链接：",url)
         open_chrome(url)
         close_sshserver(server, dbconfig, cursor)
-    except Exception  as e:
+    except Exception as e:
         close_sshserver(server, dbconfig, cursor)
         print("您查询的会员信息不存在，请确认！！")

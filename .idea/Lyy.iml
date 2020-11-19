@@ -2,7 +2,8 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <excludeFolder url="file://$MODULE_DIR$/pythonEnv" />
+      <sourceFolder url="file://$MODULE_DIR$/致维网络" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/接口调用测试/NB测试接口" isTestSource="false" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.9 (pythonEnv)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -6,8 +6,8 @@
 
 from 致维网络.joowMain import *
 
-org_code = 'hsmmsj'
-guide_no = '603'
+org_code = 'gynwbb'
+guide_no = '7081'
 
 # 查询导购今日销售金额
 sales_performance, order_count = find_guider_daily_sale_amount(org_code, guide_no)
@@ -19,7 +19,7 @@ print("导购本月销售金额：\t", sales_performance, "元;\t\t导购本月�
 
 # 查询导购上月销售金额
 sales_performance, order_count = find_guider_last_month_sale_amout(org_code, guide_no)
-print("导购本上月销售金额：\t", sales_performance, "元;\t\t导购上月订单数量：", order_count, '单。')
+print("导购上月销售金额：\t", sales_performance, "元;\t\t导购上月订单数量：", order_count, '单。')
 
 # 查询导购智零售密码
 password = decode_MD5(org_code, guide_no)

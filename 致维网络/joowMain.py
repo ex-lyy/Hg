@@ -55,6 +55,7 @@ def find_guider_monthly_sale_amout(org_code, guider_no):
     sales_performance = guider_data['sales_performance']
     order_count = guider_data['order_count']
     close_sshserver(server, dbconfig, cursor)
+    print(sql)
     return sales_performance, order_count
 
 

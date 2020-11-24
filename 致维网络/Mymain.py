@@ -135,3 +135,8 @@ def connect_myselfDB():
     dbconfig = pymysql.connect(host='localhost', port=3306, database=dbname, user='root', password='ex19950816')
     cursor = dbconfig.cursor()
     return dbconfig, cursor
+
+def get_time_str():
+    import time
+    time_time = str(time.time()).replace('.','')
+    return  time_time

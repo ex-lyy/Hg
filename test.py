@@ -4,6 +4,7 @@
 # 谨记:遵守秩序，尊重选择。
 # 创建时间：2020/11/24 16:40
 from Mymain import *
+import re
 
 org_code = 'dyxinya'
 activity_code = 'pe_1589620826768826'
@@ -53,9 +54,10 @@ def query_prize_info(activity_id):
     base_info_query_sql = "SELECT * FROM pomelo_backend_production.marketing_random_prizes WHERE prize_event_id=%s;" %activity_id
     cursor.execute(base_info_query_sql)
     base_info_data = cursor.fetchall()
-
     close_sshserver(server, dbconfig, cursor)
+    write_lines_data_list = []
     for base_info in base_info_data:
+        write_lines_data_dict = {}
         prize_type = expiration_day = begin_date = end_date = serial_no = prize_name = max_price = min_price = 'NA'
         actions = eval(base_info['actions'])
         if len(actions) == 1 :
@@ -81,17 +83,19 @@ def query_prize_info(activity_id):
                     begin_date =''
                     end_date = ''
                     serial_no = actions['params']['activity_id']
-                    actions['prize_name']
+                    prize_name_index = re.match("^\[[\s\S]*]",actions['prize_name']).span()[1]
+                    prize_name = actions['prize_name'][prize_name_index:]
                 elif actions['params']['expiration_date_type'] == 'by_date':
                     expiration_day = ''
                     begin_date = actions['params']['begin_date']
                     end_date = actions['params']['end_date']
                     serial_no = actions['params']['activity_id']
-                    actions['prize_name']
+                    prize_name_index = re.match("^\[[\s\S]*]",actions['prize_name']).span()[1]
+                    prize_name = actions['prize_name'][prize_name_index:]
             elif actions['type']== 'package':
                 prize_type ='画像礼包'
                 serial_no=actions['params']['code']
-                actions['prize_name']
+                prize_name = actions['prize_name']
             elif actions['type']== 'checkin_card':
                     expiration_date =actions['params']['expiration_date']
                     card_days = actions['params']['card_days']
@@ -102,13 +106,13 @@ def query_prize_info(activity_id):
                     begin_date = ''
                     end_date = ''
                     serial_no = actions['params']['code']
-                    actions['prize_name']
+                    prize_name = actions['prize_name']
                 elif actions['params']['expiration_date_type'] == 'by_date':
                     expiration_day = ''
                     begin_date = actions['params']['begin_date']
                     end_date = actions['params']['end_date']
                     serial_no = actions['params']['code']
-                    actions['prize_name']
+                    prize_name = actions['prize_name']
             elif actions['type']== 'intelligent_package':
                 prize_type ='智能礼包'
                 serial_no=actions['params']['code']
@@ -116,25 +120,26 @@ def query_prize_info(activity_id):
                 prize_type ='微信红包'
                 max_price =  actions['params']['max_price']
                 min_price =  actions['params']['min_price']
-                actions['prize_name']
+                prize_name = actions['prize_name']
             elif actions['type']== 'red_envelope':
                 prize_type = '商城红包'
                 max_price = actions['params']['max_price']
                 min_price = actions['params']['min_price']
-                actions['prize_name']
+                prize_name = actions['prize_name']
             else:
                 pass
 
-        print(prize_type,expiration_day ,begin_date ,end_date,serial_no,prize_name,max_price,min_price)
+        write_lines_data_dict['prize_type'] = prize_type
+        write_lines_data_dict['expiration_day'] = expiration_day
+        write_lines_data_dict['begin_date'] = begin_date
+        write_lines_data_dict['end_date'] = end_date
+        write_lines_data_dict['serial_no'] = serial_no
+        write_lines_data_dict['prize_name'] = prize_name
+        write_lines_data_dict['max_price'] = max_price
+        write_lines_data_dict['min_price'] = min_price
+        write_lines_data_list.append(write_lines_data_dict)
+    return write_lines_data_list
 
-
-    return base_info
-
-
-# base_info,activity_id = query_base_info()
-# query_count_info(activity_id)
-
-query_prize_info(3134)
 
 
 

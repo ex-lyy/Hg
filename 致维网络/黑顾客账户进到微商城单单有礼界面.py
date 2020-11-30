@@ -9,9 +9,9 @@
 from Mymain import *
 
 
-org_code = 'nbwljz'
-member_no = '1378965'
-phone = '17815900879'
+org_code = 'rjaxmm'
+member_no = '1525867361'
+phone = '15970037396'
 admin_phone = '17633705244'
 
 

@@ -13,9 +13,7 @@ created_at = '2020-09-01'
 if __name__ == '__main__':
 
     server, dbconfig, cursor = connect_masterDB('ris_production')
-
     retailer_sql = "SELECT * FROM ris_production.global_retailers WHERE profile_id IN ('1','8','9') AND state = 'online' AND service_provider_code='global' AND code NOT IN ('loveheart','yyplan','beibei','jdb','sunnybaby','harneybaby','jzaibaby','yqmamalove','bzyqyy','xwmaidibaby','fddamuzhi','xcbeierjiazu','xybuyingfang','czaiyingjiayuan','yzbeibeiyy','czhjyy','npfuwawa','jnyft','lxdodoisland','lzsimier','gdxtzgg','aqaxqzy','ssjjw','scayf','aqjbb','xhyyzj','yfxty','szxsbb','yymml','wsygbb','ddjsts','kpdcyy','hdayy');"
-
     cursor.execute(retailer_sql)
     res = cursor.fetchall()
 

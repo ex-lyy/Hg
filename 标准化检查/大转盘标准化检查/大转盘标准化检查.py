@@ -105,6 +105,7 @@ def query_count_info(activity_id):
 def query_serial_name(org_code,serial_no):
     server, dbconfig, cursor = connect_master_copy_DB('pomelo_backend_production')
     base_info_query_sql = "SELECT name FROM pomelo_backend_production.promotion_coupon_definitions WHERE org_code='%s' AND serial_no='%s';" %(org_code,serial_no)
+    print(base_info_query_sql)
     cursor.execute(base_info_query_sql)
     base_info_data = cursor.fetchone()
 
@@ -121,9 +122,11 @@ def query_prize_info(activity_id):
     write_lines_data_list = []
     for base_info in base_info_data:
         write_lines_data_dict = {}
-        prize_type = expiration_day = begin_date = end_date = serial_no = prize_name = max_price = min_price =prize_item_desc =  ''
+        prize_type = expiration_day = begin_date = end_date = serial_no = prize_name = max_price = min_price =prize_item_desc =  '-'
         actions = eval(base_info['actions'])
-        if len(actions) == 1 :
+        if len(actions) == 0:
+            pass
+        elif len(actions) == 1 :
             actions = actions[0]
             if actions['type']== 'coupon':
                 prize_type = '优惠券'
@@ -132,15 +135,21 @@ def query_prize_info(activity_id):
                     begin_date =''
                     end_date = ''
                     serial_no = actions['params']['serial_no']
-                    prize_name = query_serial_name('jwbaby',serial_no)
-                    prize_item_desc = actions['desc']
+                    prize_name = query_serial_name(org_code,serial_no)
+                    try:
+                        prize_item_desc = actions['desc']
+                    except KeyError:
+                        prize_item_desc = '-'
                 elif actions['params']['expiration_date_type'] == 'by_date':
                     expiration_day = ''
                     begin_date = actions['params']['begin_date']
                     end_date = actions['params']['end_date']
                     serial_no = actions['params']['serial_no']
                     prize_name = query_serial_name('jwbaby', serial_no)
-                    prize_item_desc = actions['desc']
+                    try:
+                        prize_item_desc = actions['desc']
+                    except KeyError:
+                        prize_item_desc = '-'
             elif actions['type']== 'ticket':
                 prize_type ='兑换券'
                 if actions['params']['expiration_date_type'] == 'by_day':
@@ -149,23 +158,35 @@ def query_prize_info(activity_id):
                     end_date = ''
                     serial_no = actions['params']['activity_id']
                     prize_name = actions['prize_name']
-                    prize_item_desc = actions['desc']
+                    try:
+                        prize_item_desc = actions['desc']
+                    except KeyError:
+                        prize_item_desc = '-'
                 elif actions['params']['expiration_date_type'] == 'by_date':
                     expiration_day = ''
                     begin_date = actions['params']['begin_date']
                     end_date = actions['params']['end_date']
                     serial_no = actions['params']['activity_id']
                     prize_name = actions['prize_name']
-                    prize_item_desc = actions['desc']
+                    try:
+                        prize_item_desc = actions['desc']
+                    except KeyError:
+                        prize_item_desc = '-'
             elif actions['type']== 'package':
                 prize_type ='画像礼包'
                 serial_no=actions['params']['code']
                 prize_name = actions['prize_name']
-                prize_item_desc = actions['desc']
+                try:
+                    prize_item_desc = actions['desc']
+                except KeyError:
+                    prize_item_desc = '-'
             elif actions['type']== 'checkin_card':
                     expiration_date =actions['params']['expiration_date']
                     card_days = actions['params']['card_days']
-                    prize_item_desc = actions['desc']
+                    try:
+                        prize_item_desc = actions['desc']
+                    except KeyError:
+                        prize_item_desc = '-'
             elif actions['type']== 'coupon_bag':
                 prize_type ='礼券包'
                 if actions['params']['expiration_date_type'] == 'by_day':
@@ -174,30 +195,45 @@ def query_prize_info(activity_id):
                     end_date = ''
                     serial_no = actions['params']['code']
                     prize_name = actions['prize_name']
-                    prize_item_desc = actions['desc']
+                    try:
+                        prize_item_desc = actions['desc']
+                    except KeyError:
+                        prize_item_desc = '-'
                 elif actions['params']['expiration_date_type'] == 'by_date':
                     expiration_day = ''
                     begin_date = actions['params']['begin_date']
                     end_date = actions['params']['end_date']
                     serial_no = actions['params']['code']
                     prize_name = actions['prize_name']
-                    prize_item_desc = actions['desc']
+                    try:
+                        prize_item_desc = actions['desc']
+                    except KeyError:
+                        prize_item_desc = '-'
             elif actions['type']== 'intelligent_package':
                 prize_type ='智能礼包'
                 serial_no=actions['params']['code']
-                prize_item_desc = actions['desc']
+                try:
+                    prize_item_desc = actions['desc']
+                except KeyError:
+                    prize_item_desc = '-'
             elif actions['type']== 'red_pack':
                 prize_type ='微信红包'
                 max_price =  actions['params']['max_price']
                 min_price =  actions['params']['min_price']
                 prize_name = actions['prize_name']
-                prize_item_desc = actions['desc']
+                try:
+                    prize_item_desc = actions['desc']
+                except KeyError:
+                    prize_item_desc = '-'
             elif actions['type']== 'red_envelope':
                 prize_type = '商城红包'
                 max_price = actions['params']['max_price']
                 min_price = actions['params']['min_price']
                 prize_name = actions['prize_name']
-                prize_item_desc = actions['desc']
+                try:
+                    prize_item_desc = actions['desc']
+                except KeyError:
+                    prize_item_desc = '-'
             else:
                 pass
         else:
@@ -244,8 +280,8 @@ def write_data(result_excel_path,data,write_column_row):
     wb.save(result_excel_path)
     return 0
 
-def write_describe(activity_code,activity_name,activity_begin_date,activity_end_date,result_excel_path):
-    check_url = r"https://jyjew.w.joowing.com/org/jyjew/prize_events/%s/play?c_type=62&c_code=%s&"%(activity_code,activity_code)
+def write_describe(org_code,activity_code,activity_name,activity_begin_date,activity_end_date,result_excel_path):
+    check_url = r"https://%s.w.joowing.com/org/%s/prize_events/%s/play?c_type=62&c_code=%s&"%(org_code,org_code,activity_code,activity_code)
     describe = f'''1.测试活动展示界面（附一张活动界面的图，附一张NB奖励抽奖记录的图）
   1.1. 审核状态下给自己发多次抽奖机会，测试转盘图片、指针是否正确 已检查，无误
   1.2. 测试活动下发的奖励是否和获奖等级对应 已检查，无误
@@ -272,8 +308,8 @@ def write_describe(activity_code,activity_name,activity_begin_date,activity_end_
     return  0
 
 if __name__ == '__main__':
-    org_code = 'dyxinya'
-    activity_code = 'pe_1589620826768826'
+    org_code = 'hefeijyl'
+    activity_code = 'pe_1606974786549291'
 
     excel_name_time = get_time_str()
     # 存放结果的文件的绝对路径
@@ -305,6 +341,6 @@ if __name__ == '__main__':
     write_data(result_excel_path,query_garde_level_info,write_column_row)
 
     # 写入Sheet2栏活动描述
-    write_describe(activity_code,activity_name,activity_begin_date,activity_end_date,result_excel_path)
+    write_describe(org_code,activity_code,activity_name,activity_begin_date,activity_end_date,result_excel_path)
 
     print("本次操作完成，请认真核对数据！")

@@ -5,7 +5,7 @@
 # 创建时间：2020/9/18 下午 02:33
 
 import requests
-from main import *
+from Mymain import *
 from Nacicat密码加密文件.NavicatCipher import *
 import json
 

@@ -7,7 +7,9 @@
 from Mymain import *
 import openpyxl
 import time
-from openpyxl.styles import Font, colors, Alignment,PatternFill,Border, Side
+import datetime
+from openpyxl.styles import Font, colors, Alignment, PatternFill, Border, Side
+
 
 # 在业务主库执行查询sql
 def execute_sqls(query_sql, result_num, cursor):
@@ -56,7 +58,7 @@ def query_register_state(org_code, query_begin_date, cursor):
 # 查询订单奖励信息不正常的商户
 def query_prize_activity_state(org_code, query_begin_date, cursor):
     query_prize_activity_state_sql = "SELECT COUNT(1) as prize_count FROM pomelo_backend_production.prize_activities WHERE org_code='%s' AND created_at>='%s';" % (
-    org_code, query_begin_date)
+        org_code, query_begin_date)
     query_prize_activity_num = execute_sqls(query_prize_activity_state_sql, result_num='1', cursor=cursor)
     if query_prize_activity_num['prize_count'] >= 1:
         return 1
@@ -67,7 +69,7 @@ def query_prize_activity_state(org_code, query_begin_date, cursor):
 # 查询促销活动信息不正常的商户
 def query_promotion_state(org_code, query_begin_date, cursor):
     query_promotion_sql = "SELECT COUNT(1) as promotion_count FROM pomelo_backend_production.promotion_promotions WHERE org_code='%s' AND created_at>='%s';" % (
-    org_code, query_begin_date)
+        org_code, query_begin_date)
     query_promotion_num = execute_sqls(query_promotion_sql, result_num='1', cursor=cursor)
     if query_promotion_num['promotion_count'] >= 1:
         return 1
@@ -78,22 +80,24 @@ def query_promotion_state(org_code, query_begin_date, cursor):
 # 查询互动活动信息不正常的商户
 def query_marketing_state(org_code, query_begin_date, cursor):
     query_marketing_sql = "SELECT COUNT(1) as marketing_count FROM pomelo_backend_production.marketing_prize_events WHERE org_code='%s' AND created_at>='%s';" % (
-    org_code, query_begin_date)
+        org_code, query_begin_date)
     query_marketing_num = execute_sqls(query_marketing_sql, result_num='1', cursor=cursor)
     if query_marketing_num['marketing_count'] >= 1:
         return 1
     else:
         return 0
 
+
 # 创建Excel表格
 def create_excel(Excel_path):
     # 先创建一个表格
     wb_create = openpyxl.Workbook(Excel_path)
-    wb_create.create_sheet('在线运营商户信息')
     wb_create.create_sheet('业务侧异常商户信息')
     wb_create.create_sheet('业务侧异常详情')
+    wb_create.create_sheet('在线运营商户信息')
     wb_create.save(Excel_path)
     return 0
+
 
 # 写入标准标题信息
 def write_excel_demo(Excel_path):
@@ -102,60 +106,70 @@ def write_excel_demo(Excel_path):
     ws_demo_two = wb_demo['业务侧异常商户信息']
     ws_demo_three = wb_demo['业务侧异常详情']
     # 写表格的头
-    ws_demo_one.cell(row = 1,column = 1,value='商户名称')
-    ws_demo_one.cell(row = 1,column = 2,value='商户编号')
-    ws_demo_one.cell(row = 1,column = 3,value='商户类型')
-    ws_demo_two.cell(row = 1,column = 1,value='商户名称')
-    ws_demo_two.cell(row = 1,column = 2,value='商户编号')
-    ws_demo_two.cell(row = 1,column = 3,value='商户类型')
-    ws_demo_three.cell(row = 1,column = 1,value='会员升级异常商户')
-    ws_demo_three.cell(row = 1,column = 3,value='订单奖励异常商户')
-    ws_demo_three.cell(row = 1,column = 5,value='促销活动异常商户')
-    ws_demo_three.cell(row = 1,column = 7,value='互动活动异常商户')
-    for column in 'ABCDEFG':
+    ws_demo_one.cell(row=1, column=1, value='商户名称')
+    ws_demo_one.cell(row=1, column=2, value='商户编号')
+    ws_demo_one.cell(row=1, column=3, value='商户类型')
+    ws_demo_two.cell(row=1, column=1, value='商户名称')
+    ws_demo_two.cell(row=1, column=2, value='商户编号')
+    ws_demo_two.cell(row=1, column=3, value='商户类型')
+    ws_demo_two.cell(row=1, column=4, value='发现异常时间')
+    ws_demo_three.cell(row=1, column=1, value='会员升级异常商户（近3月升级会员小于3人）')
+    ws_demo_three.cell(row=1, column=3, value='订单奖励活动（近3月无活动）')
+    ws_demo_three.cell(row=1, column=5, value='促销（近3月无活动）')
+    ws_demo_three.cell(row=1, column=7, value='互动游戏（近3月无活动）')
+    for column in 'ABCDEFGH':
         ws_demo_one.column_dimensions[column].width = 20
         ws_demo_two.column_dimensions[column].width = 20
-        ws_demo_three.column_dimensions[column].width = 20
+        ws_demo_three.column_dimensions[column].width = 25
     wb_demo.save(Excel_path)
-    return  0
+    return 0
 
-def write_normal_data(Excel_path,online_org_list, name_list, profile_id_list):
+
+def write_normal_data(Excel_path, online_org_list, name_list, profile_id_list):
     wb = openpyxl.load_workbook(Excel_path)
     ws = wb['在线运营商户信息']
-    for i in range(0,len(online_org_list)):
-        ws.cell(row=i+2,column=1,value=online_org_list[i])
-        ws.cell(row=i+2,column=2,value=name_list[online_org_list.index(online_org_list[i])])
-        ws.cell(row=i+2,column=3,value=profile_id_list[online_org_list.index(online_org_list[i])])
+    for i in range(0, len(online_org_list)):
+        ws.cell(row=i + 2, column=1, value=online_org_list[i])
+        ws.cell(row=i + 2, column=2, value=name_list[online_org_list.index(online_org_list[i])])
+        ws.cell(row=i + 2, column=3, value=profile_id_list[online_org_list.index(online_org_list[i])])
     wb.save(Excel_path)
     return 0
 
-def write_unnormal_data(Excel_path,unnormal_org_list,online_org_list, name_list, profile_id_list):
+
+def write_unnormal_data(Excel_path, unnormal_org_list, online_org_list, name_list, profile_id_list):
     wb = openpyxl.load_workbook(Excel_path)
     ws = wb['业务侧异常商户信息']
-    for i in range(0,len(unnormal_org_list)):
-        ws.cell(row=i+2,column=1,value=unnormal_org_list[i])
-        ws.cell(row=i+2,column=2,value=name_list[online_org_list.index(unnormal_org_list[i])])
-        ws.cell(row=i+2,column=3,value=profile_id_list[online_org_list.index(unnormal_org_list[i])])
+    # 写当月第一天的日期
+    now = datetime.datetime.now()
+    this_month_start = datetime.datetime(now.year, now.month, 1).strftime("%Y年%m月")
+    for i in range(0, len(unnormal_org_list)):
+        ws.cell(row=i + 2, column=1, value=unnormal_org_list[i])
+        ws.cell(row=i + 2, column=2, value=name_list[online_org_list.index(unnormal_org_list[i])])
+        ws.cell(row=i + 2, column=3, value=profile_id_list[online_org_list.index(unnormal_org_list[i])])
+        ws.cell(row=i + 2, column=4, value=this_month_start)
     wb.save(Excel_path)
     return 0
 
-def write_unnormal_activity_data(Excel_path,unnormal_member_org_list,unnormal_prize_org_list,unnormal_promotion_org_list,unnormal_marketing_org_list,online_org_list, name_list):
+
+def write_unnormal_activity_data(Excel_path, unnormal_member_org_list, unnormal_prize_org_list,
+                                 unnormal_promotion_org_list, unnormal_marketing_org_list, online_org_list, name_list):
     wb = openpyxl.load_workbook(Excel_path)
     ws = wb['业务侧异常详情']
-    for i in range(0,len(unnormal_member_org_list)):
-        ws.cell(row=i+2,column=1,value=unnormal_member_org_list[i])
-        ws.cell(row=i+2,column=2,value=name_list[online_org_list.index(unnormal_member_org_list[i])])
-    for i in range(0,len(unnormal_prize_org_list)):
-        ws.cell(row=i+2,column=3,value=unnormal_prize_org_list[i])
-        ws.cell(row=i+2,column=4,value=name_list[online_org_list.index(unnormal_prize_org_list[i])])
-    for i in range(0,len(unnormal_promotion_org_list)):
-        ws.cell(row=i+2,column=5,value=unnormal_promotion_org_list[i])
-        ws.cell(row=i+2,column=6,value=name_list[online_org_list.index(unnormal_promotion_org_list[i])])
-    for i in range(0,len(unnormal_marketing_org_list)):
-        ws.cell(row=i+2,column=7,value=unnormal_marketing_org_list[i])
-        ws.cell(row=i+2,column=8,value=name_list[online_org_list.index(unnormal_marketing_org_list[i])])
+    for i in range(0, len(unnormal_member_org_list)):
+        ws.cell(row=i + 2, column=1, value=unnormal_member_org_list[i])
+        ws.cell(row=i + 2, column=2, value=name_list[online_org_list.index(unnormal_member_org_list[i])])
+    for i in range(0, len(unnormal_prize_org_list)):
+        ws.cell(row=i + 2, column=3, value=unnormal_prize_org_list[i])
+        ws.cell(row=i + 2, column=4, value=name_list[online_org_list.index(unnormal_prize_org_list[i])])
+    for i in range(0, len(unnormal_promotion_org_list)):
+        ws.cell(row=i + 2, column=5, value=unnormal_promotion_org_list[i])
+        ws.cell(row=i + 2, column=6, value=name_list[online_org_list.index(unnormal_promotion_org_list[i])])
+    for i in range(0, len(unnormal_marketing_org_list)):
+        ws.cell(row=i + 2, column=7, value=unnormal_marketing_org_list[i])
+        ws.cell(row=i + 2, column=8, value=name_list[online_org_list.index(unnormal_marketing_org_list[i])])
     wb.save(Excel_path)
     return 0
+
 
 start_time = time.time()
 # 定义查询开始时间
@@ -195,18 +209,14 @@ if __name__ == '__main__':
             unnormal_org_list.append(org_code)
     # 关闭数据库链接
     close_sshserver(server, dbconfig, cursor)
-    print(unnormal_member_org_list)
-    print(unnormal_prize_org_list)
-    print(unnormal_promotion_org_list)
-    print(unnormal_marketing_org_list)
-    print(unnormal_org_list)
 
     # 创建表格路径
     Excel_path = r'C:\Users\LyyCc\Desktop\业务侧异常商户情况' + query_begin_date + r'.xlsx'
     create_excel(Excel_path)
     write_excel_demo(Excel_path)
-    write_normal_data(Excel_path,online_org_list, name_list, profile_id_list)
-    write_unnormal_data(Excel_path,unnormal_org_list,online_org_list, name_list, profile_id_list)
-    write_unnormal_activity_data(Excel_path,unnormal_member_org_list,unnormal_prize_org_list,unnormal_promotion_org_list,unnormal_marketing_org_list,online_org_list, name_list)
+    write_normal_data(Excel_path, online_org_list, name_list, profile_id_list)
+    write_unnormal_data(Excel_path, unnormal_org_list, online_org_list, name_list, profile_id_list)
+    write_unnormal_activity_data(Excel_path, unnormal_member_org_list, unnormal_prize_org_list,
+                                 unnormal_promotion_org_list, unnormal_marketing_org_list, online_org_list, name_list)
     end_time = time.time()
-    print("本次操作用时：",end_time-start_time)
+    print("本次操作用时：", end_time - start_time)

@@ -9,7 +9,7 @@
 from Mymain import *
 
 
-org_code = 'aitiantian'
+org_code = 'nbwljz'
 member_no = '10056337'
 phone = '18281757365'
 admin_phone = '17633705244'
@@ -53,3 +53,4 @@ if __name__ == '__main__':
     except Exception as e:
         close_sshserver(server, dbconfig, cursor)
         print("您查询的会员信息不存在，请确认！！")
+        print(e)

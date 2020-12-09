@@ -145,7 +145,7 @@ def query_prize_info(activity_id):
                     begin_date = actions['params']['begin_date']
                     end_date = actions['params']['end_date']
                     serial_no = actions['params']['serial_no']
-                    prize_name = query_serial_name('jwbaby', serial_no)
+                    prize_name = query_serial_name(org_code, serial_no)
                     try:
                         prize_item_desc = actions['desc']
                     except KeyError:
@@ -308,8 +308,8 @@ def write_describe(org_code,activity_code,activity_name,activity_begin_date,acti
     return  0
 
 if __name__ == '__main__':
-    org_code = 'hefeijyl'
-    activity_code = 'pe_1606974786549291'
+    org_code = 'lmqs'
+    activity_code = 'pe_1607393460765067'
 
     excel_name_time = get_time_str()
     # 存放结果的文件的绝对路径

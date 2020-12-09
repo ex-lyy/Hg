@@ -5,15 +5,12 @@
 # 创建时间：2020/8/22 17:44
 
 
-
 from Mymain import *
 
-
-org_code = 'nbwljz'
-member_no = '10056337'
-phone = '18281757365'
+org_code = 'aitiantian'
+member_no = 'JO106428'
+phone = '15880966002'
 admin_phone = '17633705244'
-
 
 if __name__ == '__main__':
     master_dbname = 'ris_production'
@@ -29,7 +26,8 @@ if __name__ == '__main__':
             sql = "SELECT * FROM ris_production.members WHERE org_code = '%s' AND phone = '%s';" % (org_code, phone)
             break
         elif choose == '3':
-            sql = "SELECT * FROM ris_production.members WHERE org_code = '%s' AND phone = '%s';" % (org_code, admin_phone)
+            sql = "SELECT * FROM ris_production.members WHERE org_code = '%s' AND phone = '%s';" % (
+                    org_code, admin_phone)
             break
         else:
             print("您的输入有误，请重新输入!")
@@ -41,16 +39,13 @@ if __name__ == '__main__':
         name = data['name']
         seq = data['seq']
         jw_id = data['jw_id']
-        print("姓名：", name)
-        print("会员号：", member_no)
-        print("手机号：", phone)
-        print("jw_id：", jw_id)
-        print("序列号：", seq)
-        url = "https://%s.w.joowing.com/org/%s/prize_histories?activity_type=prize&app_code=477710&app_type=app&usr=%s" % (org_code, org_code, seq)
-        print("微商城链接：",url)
+        print("姓名：", name, "\n", "会员号：", member_no, "\n", "手机号：", phone, "\n", "jw_id：", jw_id, "\n", "序列号：", seq)
+        url = "https://%s.w.joowing.com/org/%s/prize_histories?activity_type=prize&app_code=477710&app_type=app&u" \
+              "sr=%s" % (
+                org_code, org_code, seq)
+        print("微商城链接：", url)
         open_chrome(url)
         close_sshserver(server, dbconfig, cursor)
     except Exception as e:
         close_sshserver(server, dbconfig, cursor)
         print("您查询的会员信息不存在，请确认！！")
-        print(e)

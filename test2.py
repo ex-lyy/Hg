@@ -1,51 +1,77 @@
 from Mymain import *
 import json
 
-# 查询礼券包基本信息
-def query_couponbag_info(org_code,package_code):
-    query_couponbag_info_sql = "SELECT total,`name`,optional,`desc`,related_coupon,prize_items FROM pomelo_backend_production.prize_coupon_bags WHERE org_code='%s' AND code='%s';"%(org_code,package_code)
+
+# 查询配置的奖励信息
+def query_avtivity_prize_info(org_code, activity_id):
+    query_avtivity_prize_info_sql = "select reward_limit,max_count,prize_type,prize_info,member_restriction_count,member_restriction,restriction_product_skus from pomelo_backend_production.rush_to_get_coupon_prize_items where org_code='%s' and activity_id= '%s' order by priority desc;" % (
+    org_code, activity_id)
     server, dbconfig, cursor = connect_master_copy_DB('pomelo_backend_production')
-    cursor.execute(query_couponbag_info_sql)
-    couponbag_info_sql_data = cursor.fetchone()
+    cursor.execute(query_avtivity_prize_info_sql)
+    activity_prize_info_data = cursor.fetchall()
     close_sshserver(server, dbconfig, cursor)
-    if couponbag_info_sql_data['related_coupon'] != '{"type": "", "params": {}, "valid_days": 7, "offset_days": 1}':
-        print("礼券包‘%s‘配置的有领取后关联优惠，请进行额外的检查!"%couponbag_info_sql_data['name'])
-    couponbag_base_info = copy.deepcopy(couponbag_info_sql_data)
-    couponbag_base_info.pop('related_coupon')
-    couponbag_base_info.pop('prize_items')
-    couponbag_info_list = []
-    # 处理配置的奖励数据
-    couponbag_prize_items = json.loads(couponbag_info_sql_data['prize_items'])
-    for prize_items in couponbag_prize_items:
-        prize_items_dict = {'type':'优惠券','serial_no':'','serial_name':'','min_price':'','max_price':''}   #定义字典，储存我们配置的每一项的数据
-        if prize_items['type']  == 'coupon':
-            prize_items_dict['type'] = '优惠券'
-            prize_items_dict['serial_no'] = prize_items['params']['serial_no']
-            prize_items_dict['serial_name'] = prize_items['prize_name']
-        elif prize_items['type']  == 'ticket':
-            prize_items_dict['type'] = '兑换券'
-            prize_items_dict['serial_no'] = prize_items['params']['activity_id']
-            prize_items_dict['serial_name'] = prize_items['params']['name']
-        elif prize_items['type']  == 'virtual_product':
-            prize_items_dict['type'] = '积分'
-            prize_items_dict['score_num'] = prize_items['params']['num']
-            prize_items_dict['serial_name'] = prize_items['prize_name']
-        elif prize_items['type']  == 'red_envelope':
-            prize_items_dict['type'] = '红包'
-            prize_items_dict['min_price'] = prize_items['params']['min_price']
-            prize_items_dict['max_price'] = prize_items['params']['max_price']
-            prize_items_dict['serial_name'] = prize_items['prize_name']
-        elif prize_items['type']  == 'intelligent_package':
-            prize_items_dict['type'] = '会员智能礼包'
-            prize_items_dict['name'] = 'NA'
-            prize_items_dict['serial_no'] = prize_items['params']['code']
-        else:
-            print("礼券包%s出现了点问题，请手动检查！"%couponbag_info_sql_data['name'])
-        couponbag_info_list.append(prize_items_dict)
-    # 返回活动基本信息、活动配置的奖励信息
-    return couponbag_info_sql_data,couponbag_info_list
+    activity_prize_item_list = []
+    for activity_prize_item in activity_prize_info_data:
+        limit_type = limit_count = prize_type = prize_serial_no = prize_serial_name = expiration_date = prize_begin_date = prize_end_date = prize_get_limit_type = prize_get_limit_skus = '-'
+        activity_prize_item_dict = {}
+        # 划分限制类型
+        if activity_prize_item['reward_limit'] == 'total':
+            limit_type = '限制总量'
+        elif activity_prize_item['reward_limit'] == 'none':
+            limit_type = '不限制'
+        elif activity_prize_item['reward_limit'] == 'day':
+            limit_type = '每日限量'
+        limit_count = activity_prize_item['max_count']
+        # 划分奖励类型
+        if activity_prize_item['prize_type'] == 'coupon':
+            prize_type = '优惠券'
+            activity_prize_item_info = json.loads(activity_prize_item['prize_info'])
+            if activity_prize_item_info['params']['expiration_date_type'] == 'by_day':
+                expiration_date = activity_prize_item_info['params']['expiration_date']
+            elif activity_prize_item_info['params']['expiration_date_type'] == 'by_date':
+                prize_begin_date = activity_prize_item_info['params']['begin_date']
+                prize_end_date = activity_prize_item_info['params']['end_date']
+            prize_serial_no = activity_prize_item_info['params']['serial_no']
+            prize_serial_name = activity_prize_item_info['prize_name']
+        elif activity_prize_item['prize_type'] == 'ticket':
+            prize_type = '兑换券'
+            activity_prize_item_info = json.loads(activity_prize_item['prize_info'])
+            if activity_prize_item_info['params']['expiration_date_type'] == 'by_day':
+                expiration_date = activity_prize_item_info['params']['expiration_date']
+            elif activity_prize_item_info['params']['expiration_date_type'] == 'by_date':
+                prize_begin_date = activity_prize_item_info['params']['begin_date']
+                prize_end_date = activity_prize_item_info['params']['end_date']
+            prize_serial_no = activity_prize_item_info['id']
+            prize_serial_name = activity_prize_item_info['params']['name']
+        elif activity_prize_item['prize_type'] == 'coupon_bag':
+            prize_type = '礼券包'
+            activity_prize_item_info = json.loads(activity_prize_item['prize_info'])
+            if activity_prize_item_info['params']['expiration_date_type'] == 'by_day':
+                expiration_date = activity_prize_item_info['params']['expiration_date']
+            elif activity_prize_item_info['params']['expiration_date_type'] == 'by_date':
+                prize_begin_date = activity_prize_item_info['params']['begin_date']
+                prize_end_date = activity_prize_item_info['params']['end_date']
+            prize_serial_no = activity_prize_item_info['params']['code']
+            prize_serial_name = activity_prize_item_info['prize_name']
+        # 判断券领取限制
+        if activity_prize_item['member_restriction'] == 'all':
+            prize_get_limit_type = '不限制'
+        elif activity_prize_item['member_restriction'] == 'not_buy_product':
+            prize_get_limit_type = '限制未购条码'
+            prize_get_limit_skus = activity_prize_item['restriction_product_skus']
+        activity_prize_item_dict['limit_type'] = limit_type
+        activity_prize_item_dict['limit_count'] = limit_count
+        activity_prize_item_dict['prize_type'] = prize_type
+        activity_prize_item_dict['prize_serial_no'] = prize_serial_no
+        activity_prize_item_dict['expiration_date'] = expiration_date
+        activity_prize_item_dict['prize_begin_date'] = prize_begin_date
+        activity_prize_item_dict['prize_end_date'] = prize_end_date
+        activity_prize_item_dict['prize_get_limit_type'] = prize_get_limit_type
+        activity_prize_item_dict['prize_get_limit_skus'] = prize_get_limit_skus
+        activity_prize_item_list.append(activity_prize_item_dict)
+    return activity_prize_item_list
 
 
-couponbag_info_sql_data, couponbag_info_list = query_couponbag_info('jwbaby', 'coupon_bag_20200813101018')
-print(couponbag_info_sql_data)
-print(couponbag_info_list)
+cc = query_avtivity_prize_info('jwbaby', 6055)
+
+print(cc)

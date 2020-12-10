@@ -308,8 +308,10 @@ def write_describe(org_code,activity_code,activity_name,activity_begin_date,acti
     return  0
 
 if __name__ == '__main__':
-    org_code = 'lmqs'
-    activity_code = 'pe_1607393460765067'
+    # 手动输入活动数据：
+    org_code = str(input("请输入商户code："))
+    activity_code = str(input("请输入活动code："))
+
 
     excel_name_time = get_time_str()
     # 存放结果的文件的绝对路径

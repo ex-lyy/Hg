@@ -26,7 +26,7 @@ def execute_sqls(query_sql, result_num, cursor):
 
 # 查询在线的商户信息
 def query_online_org():
-    query_online_org_sql = "SELECT code,name,profile_id FROM ris_production.global_retailers WHERE profile_id IN ('1','8','9') AND state = 'online' AND service_provider_code='global' AND code NOT IN ('babybear','jinyaolan','happyxybb','loveheart','yyplan','shengyi','beibei','aiwa','jdb','xzmmbb','lyjy','sunnybaby','kkqq','eastbaby','harneybaby','dreamstart','tianyibaby','babyfocus','mamalove','yingyuansu','ybfcbb','qwmykj','zgprettybaby','rsxyzj','rxwayy','lzgoodboy','czqcyy','pxayf','lshibaby','clbabytiandi','wxmyf','fzjiabeiai','fzabd','jzaibaby','sqbaobaole','xzguzi','yqmamalove','glhuangjiayy','pyfujiababy','zyyibaby','bzyqyy','xwmaidibaby','hyqzy','cddiaodiao','gynanwanvwa','gtmamibaby','pzyingyuansu','xpbaobaodangjia','fddamuzhi','ylmamilove','jjdiandian','xmshujie','habaonuoliying','cydoudingzhijia','gzcoolbaby','xcbeierjiazu','pzhkangbaole','mtyunzhiai','lhlvshu','yhaijiabao','mmbabyangel','shbfuwawa','xybuyingfang','czaiyingjiayuan','yzbeibeiyy','czhjyy','jnyft','zbqch','lxdodoisland','cdgeke','lzsimier','hhmbwy','gdxtzgg','zzygts','yckbyy','yycomebaby','aqaxqzy','babyeden','aidingbaby','ssjjw','sevenkea','hzfxbb','lyxbl','pzhappybud','cpbeilejia','masmmbb','scayf','hnqjmy','ssmiergang','aqjbb','xhyyzj','hfyybs','yfxty','qjjbb','qhdbabytown','szxsbb','yymml','yxgayy','nhfbb','wsygbb','ptbbboom','chqzmy','cdbbth','ddjsts','hshjmy','fnqzbb','bbnnbb','kpdcyy','hdayy','axhk','wlbbdj','lyygbb','hgzabb');"
+    query_online_org_sql = "SELECT code,name,profile_id FROM ris_production.global_retailers WHERE profile_id IN ('1','8','9') AND state = 'online' AND service_provider_code='global' AND code NOT IN ('babybear','jinyaolan','happyxybb','loveheart','yyplan','shengyi','beibei','aiwa','jdb','xzmmbb','lyjy','sunnybaby','kkqq','eastbaby','harneybaby','dreamstart','tianyibaby','babyfocus','mamalove','yingyuansu','ybfcbb','qwmykj','zgprettybaby','rsxyzj','rxwayy','lzgoodboy','czqcyy','pxayf','lshibaby','clbabytiandi','wxmyf','fzjiabeiai','fzabd','jzaibaby','sqbaobaole','xzguzi','yqmamalove','glhuangjiayy','pyfujiababy','zyyibaby','bzyqyy','xwmaidibaby','hyqzy','cddiaodiao','gynanwanvwa','gtmamibaby','pzyingyuansu','xpbaobaodangjia','fddamuzhi','ylmamilove','jjdiandian','xmshujie','habaonuoliying','cydoudingzhijia','gzcoolbaby','xcbeierjiazu','pzhkangbaole','mtyunzhiai','lhlvshu','yhaijiabao','mmbabyangel','shbfuwawa','xybuyingfang','czaiyingjiayuan','yzbeibeiyy','czhjyy','jnyft','zbqch','lxdodoisland','cdgeke','lzsimier','hhmbwy','gdxtzgg','zzygts','yckbyy','yycomebaby','aqaxqzy','babyeden','aidingbaby','ssjjw','sevenkea','hzfxbb','lyxbl','pzhappybud','cpbeilejia','masmmbb','scayf','hnqjmy','ssmiergang','aqjbb','xhyyzj','hfyybs','yfxty','qjjbb','qhdbabytown','szxsbb','yymml','yxgayy','nhfbb','wsygbb','ptbbboom','chqzmy','cdbbth','ddjsts','hshjmy','fnqzbb','bbnnbb','kpdcyy','hdayy','axhk','wlbbdj','lyygbb','hgzabb','hmmy');"
     online_org_data_list = execute_sqls(query_online_org_sql, result_num='all', cursor=cursor)
     # 商户数据处理
     online_org_list = []  # 定义org_code的列表
@@ -124,7 +124,6 @@ def write_excel_demo(Excel_path):
     wb_demo.save(Excel_path)
     return 0
 
-
 def write_normal_data(Excel_path, online_org_list, name_list, profile_id_list):
     wb = openpyxl.load_workbook(Excel_path)
     ws = wb['在线运营商户信息']
@@ -192,8 +191,10 @@ if __name__ == '__main__':
     online_org_list, name_list, profile_id_list = online_org_data = query_online_org()
     for org_code in online_org_list:
         print("正在处理%s商户的数据！" % org_code)
+
         # 查询注册会员数量是否正常
-        register_unnormal_org_state = query_register_state(org_code, query_begin_date, cursor)
+        register_unnormal_org_state = query_register_state(org_code,
+                                                            query_begin_date, cursor)
         prize_activity_state = query_prize_activity_state(org_code, query_begin_date, cursor)
         promotion_activity_state = query_promotion_state(org_code, query_begin_date, cursor)
         marketing_activity_state = query_prize_activity_state(org_code, query_begin_date, cursor)

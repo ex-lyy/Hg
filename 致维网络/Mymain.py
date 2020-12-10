@@ -189,3 +189,6 @@ def query_couponbag_info(org_code,package_code):
         couponbag_info_list.append(prize_items_dict)
     # 返回活动基本信息、活动配置的奖励信息
     return couponbag_info_sql_data,couponbag_info_list
+
+if __name__ == '__main__':
+    print(sss)

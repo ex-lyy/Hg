@@ -7,9 +7,9 @@
 
 from Mymain import *
 
-org_code = 'aitiantian'
+org_code = 'sldyzyy'
 member_no = 'JO106428'
-phone = '15880966002'
+phone = '15126729024'
 admin_phone = '17633705244'
 
 if __name__ == '__main__':

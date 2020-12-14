@@ -167,14 +167,23 @@ def write_prize_data(result_excel_path,prize_data,write_index):
         for data in prize_data.values():
             ws.cell(row= write_index, column= write_column_index, value= data)
             write_column_index += 1
+    elif isinstance(prize_data,list):
+        for i in prize_data:
+            write_column_index = 1
+            for data in i.values():
+                ws.cell(row=write_index, column=write_column_index, value=data)
+                write_column_index += 1
+            write_index += 1
+
     wb.save(result_excel_path)
     return 0
 
 
 
 if __name__ == '__main__':
-    org_code = 'jwbaby'
-    activity_code = 'gc_1607309295950189'
+    # 手动输入活动数据：
+    org_code = str(input("请输入商户code："))
+    activity_code = str(input("请输入活动code："))
 
     excel_name_time = get_time_str()
     # 存放结果的文件的绝对路径
@@ -185,10 +194,10 @@ if __name__ == '__main__':
     create_excel(result_excel_path)
     write_medoel_excel(result_excel_path)
 
-
     avtivity_base_info_data = query_avtivity_base_info(org_code,activity_code)
     activity_id = avtivity_base_info_data['id']
     avtivity_prize_info_data = query_avtivity_prize_info(org_code,activity_id)
-    write_prize_data(result_excel_path,avtivity_base_info_data,write_index='3')
+    write_prize_data(result_excel_path,avtivity_base_info_data,write_index=3)
+    write_prize_data(result_excel_path,avtivity_prize_info_data,write_index=7)
 
     print("文件生成完毕，请认真检查数据！")
